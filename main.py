@@ -20,6 +20,8 @@ avatar = Avatar(stars=200)
 class Message(BaseModel):
     content: str
     duration: int
+    background: Background
+    stars: int = 200
 
 
 @app.post("/speak")
@@ -31,18 +33,6 @@ def message(message: Message):
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
             detail='Unavailable',
         )
-    return "Ok"
-
-
-@app.get("/background/{background}")
-def background(background: Background):
-    avatar.set_background(background)
-    return "Ok"
-
-
-@app.get("/stars/add/{x}")
-def add_stars(x: int):
-    avatar.add_stars(x)
     return "Ok"
 
 

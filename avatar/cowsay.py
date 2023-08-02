@@ -29,6 +29,29 @@ cow = [
     ||     ||
 """
 ]
+cow_matrix = [
+    """
+^__^
+(==)\_______
+(__)\       )\/
+    ||----w |
+    ||     ||
+""",
+    """
+^__^
+(==)\_______
+(__)\       )\/
+    ||----w |
+    ||     ||
+""",
+    """
+^__^
+(==)\_______
+(..)\       )\/
+    ||----w |
+    ||     ||
+"""
+]
 
 
 def _blink():
@@ -68,8 +91,8 @@ class Cowsay(Sprite):
     Sample Cowsay sprite
     """
 
-    def __init__(self, screen, x, y, animation=_blink, colour=Screen.COLOUR_WHITE,
-                 start_frame=0, stop_frame=0):
+    def __init__(self, screen, x, y, animation=_blink, colour=Screen.COLOUR_CYAN,
+                 start_frame=0, stop_frame=0, speed: int = 0, matrix: bool = False):
         """
         See :py:obj:`.Sprite` for details.
         """
@@ -79,13 +102,14 @@ class Cowsay(Sprite):
         super(Cowsay, self).__init__(
             screen,
             renderer_dict={
-                "default": StaticRenderer(images=cow,
+                "default": StaticRenderer(images=cow[matrix],
                                           animation=animation),
             },
             path=path,
             colour=colour,
             start_frame=start_frame,
-            stop_frame=stop_frame)
+            stop_frame=stop_frame,
+            speed=speed)
 
 
 class SpeakingCowsay(Cowsay):
@@ -93,8 +117,8 @@ class SpeakingCowsay(Cowsay):
     Sample Cowsay talking sprite - mouth move will a bubble is display
     """
 
-    def __init__(self, screen, x, y, text: str = "", colour=Screen.COLOUR_WHITE,
-                 start_frame=0, duration_frame=0):
+    def __init__(self, screen, x, y, text: str = "", colour=Screen.COLOUR_CYAN,
+                 start_frame=0, duration_frame=0, speed: int = 0, matrix: bool = False):
         """
         See :py:obj:`.Sprite` for details.
         """
@@ -104,10 +128,11 @@ class SpeakingCowsay(Cowsay):
             screen,
             SpeechBubble("\n".join(text_as_lines), "R",
                          uni=screen.unicode_aware),
-            x=x-len(max(text_as_lines, key=len))-13, y=y-3-len(text_as_lines),
-            colour=Screen.COLOUR_CYAN,
+            x=x-len(max(text_as_lines, key=len))-12, y=y-3-len(text_as_lines),
+            colour=Screen.COLOUR_RED,
             clear=True,
-            speed=1,
+            speed=0,
+            transparent=False,
             start_frame=start_frame,
             stop_frame=start_frame+duration_frame)
 
@@ -117,7 +142,9 @@ class SpeakingCowsay(Cowsay):
             animation=_speak,
             colour=colour,
             start_frame=start_frame,
-            stop_frame=start_frame+duration_frame)
+            stop_frame=start_frame+duration_frame,
+            matrix=matrix,
+            speed=speed)
 
     def get_as_effects(self):
         return [self, self.bubble]
