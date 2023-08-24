@@ -6,9 +6,8 @@ import uvicorn
 from asciimatics.exceptions import ResizeScreenError
 from asciimatics.screen import Screen
 from fastapi import FastAPI, HTTPException, status
-from pydantic import BaseModel
 
-from avatar.avatar import Avatar, Background
+from avatar.avatar import Avatar, SpeakRequest
 
 HOST_NAME = "localhost"
 PORT_NUMBER = 8000
@@ -17,15 +16,8 @@ app = FastAPI()
 avatar = Avatar(stars=200)
 
 
-class Message(BaseModel):
-    content: str
-    duration: int
-    background: Background
-    stars: int = 200
-
-
 @app.post("/speak")
-def message(message: Message):
+def message(message: SpeakRequest):
     try:
         avatar.speak(message)
     except Full:

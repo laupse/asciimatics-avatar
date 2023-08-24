@@ -1,2 +1,3 @@
-asciimatics==1.14.0
+asciimatics @ git+https://github.com/peterbrittain/asciimatics@master
 fastapi==0.88.0
+uvicorn==0.23.2

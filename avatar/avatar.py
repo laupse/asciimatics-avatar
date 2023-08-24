@@ -6,6 +6,7 @@ from asciimatics.effects import Matrix, Snow, Stars, RandomNoise
 from asciimatics.exceptions import StopApplication
 from asciimatics.scene import Scene
 from asciimatics.screen import Screen
+from pydantic import BaseModel, Field
 
 from .cowsay import Cowsay, SpeakingCowsay
 
@@ -15,6 +16,22 @@ class Background(str, Enum):
     STARS = "stars"
     SNOW = "snow"
     NOISE = "noise"
+    NONE = "none"
+
+
+class AvatarConfig(BaseModel):
+    background: Background
+    stars: int = 200
+
+
+class Message(BaseModel):
+    content: str
+    duration: int
+
+
+class SpeakRequest(BaseModel):
+    message: Message
+    avatar_config: AvatarConfig | None = Field()
 
 
 class EndMessage(StopApplication):
@@ -29,7 +46,7 @@ class Avatar():
         self.scene = Scene([], -1)
         self.duration = -1
         self.stars = stars
-        self.background = Background.NOISE
+        self.background = Background.STARS
         self.background_updated = False
         self.message_queue = Queue(1)
 
@@ -107,7 +124,8 @@ class Avatar():
             self.background = Background(x)
             self.background_updated = False
 
-    def speak(self, message):
-        self.set_background(message.background)
-        self.stars = message.stars
-        self.message_queue.put(message, block=False)
+    def speak(self, speak_request: SpeakRequest):
+        if speak_request.avatar_config is not None:
+            self.set_background(speak_request.avatar_config.background)
+            self.stars = speak_request.avatar_config.stars
+        self.message_queue.put(speak_request.message, block=False)

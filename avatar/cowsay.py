@@ -102,7 +102,7 @@ class Cowsay(Sprite):
         super(Cowsay, self).__init__(
             screen,
             renderer_dict={
-                "default": StaticRenderer(images=cow[matrix],
+                "default": StaticRenderer(images=cow,
                                           animation=animation),
             },
             path=path,
